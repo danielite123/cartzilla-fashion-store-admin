@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useLoadingStore } from "@/store/loading-store";
-import Loader from "./page.loader";
+import { Loader } from "../ui";
 
 const AUTH_ROUTES = ["/login", "/register"];
 const isAuthRoute = (path: string) => AUTH_ROUTES.includes(path);

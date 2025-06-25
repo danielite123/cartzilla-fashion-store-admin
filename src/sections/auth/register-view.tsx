@@ -1,21 +1,19 @@
 "use client";
 
-import CustomButton from "@/components/button.component";
 import Image from "next/image";
 import GoogleLogo from "@/assets/google-logo.png";
 import AppleLogo from "@/assets/apple-logo.png";
 import Banner from "@/assets/banner.jpg";
-import InputField from "@/components/input.component";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import Checkbox from "@/components/checkbox.componet";
 import { useState } from "react";
 import Link from "next/link";
-import LoadingSpinner from "@/components/loading-spinner";
 import registerFormSchema from "@/lib/validation/register";
 import { useRegister } from "@/api/auth";
 import { useAuthStore } from "@/store/auth-store";
+import { Button, Checkbox, LoadingSpinner } from "@/components/ui";
+import InputField from "@/components/ui/input.component";
 
 type FormValues = z.infer<typeof registerFormSchema>;
 
@@ -66,7 +64,7 @@ export default function RegisterView() {
           </div>
 
           <div className="flex flex-row items-center w-full gap-4">
-            <CustomButton
+            <Button
               type="submit"
               className="w-full px-2 py-2.5 border-1 border-gray-100 gap-1.5"
             >
@@ -77,14 +75,14 @@ export default function RegisterView() {
                 height={18}
               />
               <p>Google</p>
-            </CustomButton>
-            <CustomButton
+            </Button>
+            <Button
               type="submit"
               className="w-full px-2 py-2.5 border-1 border-gray-100 gap-1.5"
             >
               <Image src={AppleLogo} alt="goggle-logo" width={16} height={16} />
               <p>Apple</p>
-            </CustomButton>
+            </Button>
           </div>
 
           <div className="flex items-center justify-center w-full mt-2">
@@ -165,13 +163,13 @@ export default function RegisterView() {
               </p>
             </div>
 
-            <CustomButton
+            <Button
               type="submit"
               className="w-full p-3 bg-green-400 cursor-pointer mt-4"
               disabled={isRegistering}
             >
               {isRegistering ? <LoadingSpinner /> : "Register"}
-            </CustomButton>
+            </Button>
           </form>
 
           <div className="w-full flex flex-row items-center justify-center">

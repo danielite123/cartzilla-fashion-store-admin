@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 
 :root {
   --background: #ffffff;
@@ -14,6 +15,7 @@
 
 @theme {
   --color-light-grey: #535a6a;
+  --font-outfit: "Outfit", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
