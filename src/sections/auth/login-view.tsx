@@ -14,6 +14,8 @@ import Checkbox from "@/components/checkbox.componet";
 import { useState } from "react";
 import Link from "next/link";
 import LoadingSpinner from "@/components/loading-spinner";
+import { useLogin } from "@/api/auth";
+import { useAuthStore } from "@/store/auth-store";
 
 type FormValues = z.infer<typeof loginFormSchema>;
 
@@ -21,13 +23,16 @@ export default function LoginView() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     watch,
     reset,
   } = useForm<FormValues>({
     resolver: zodResolver(loginFormSchema),
     mode: "onBlur",
   });
+
+  const { login, isLogining } = useLogin();
+  const setToken = useAuthStore((state) => state.setToken);
 
   const [boxChecked, setBoxChecked] = useState(false);
 
@@ -36,9 +41,10 @@ export default function LoginView() {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const res = await login(data);
+      setToken(res.accessToken);
+
       reset();
-      console.log("Submitted data:", data);
     } catch (error) {
       reset();
       console.error("Submission failed:", error);
@@ -48,7 +54,7 @@ export default function LoginView() {
   return (
     <div className="w-full flex flex-row">
       <div className="flex flex-col flex-1 items-start justify-center p-4 gap-4 min-h-screen">
-        <div className="w-full max-w-[360px] flex flex-col mx-auto gap-4">
+        <div className="w-full max-w-[360px] flex flex-col mx-auto gap-2">
           <div className="flex items-center">
             <p className="text-xl font-semibold">Cartzilla</p>
           </div>
@@ -145,9 +151,9 @@ export default function LoginView() {
             <CustomButton
               type="submit"
               className="w-full p-3 bg-green-400 cursor-pointer mt-4"
-              disabled={isSubmitting}
+              disabled={isLogining}
             >
-              {isSubmitting ? <LoadingSpinner /> : "Login"}
+              {isLogining ? <LoadingSpinner /> : "Login"}
             </CustomButton>
           </form>
 

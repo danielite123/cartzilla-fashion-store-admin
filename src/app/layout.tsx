@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import QueryProvider from "@/components/query-provider";
+import ClientLayout from "@/components/client-layout";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -19,7 +21,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.variable}>{children}</body>
+      <body className={inter.variable}>
+        <QueryProvider>
+          <ClientLayout>{children}</ClientLayout>
+        </QueryProvider>
+      </body>
     </html>
   );
 }
