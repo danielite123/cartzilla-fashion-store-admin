@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
 
 :root {
   --background: #ffffff;
@@ -14,8 +14,20 @@
 }
 
 @theme {
-  --color-light-grey: #535a6a;
-  --font-outfit: "Outfit", sans-serif;
+  --color-light-grey: #737373;
+  --color-grey: #7c7c7c;
+  --color-cyprus: #023337;
+  --color-ocean-green: #4ea674;
+  --color-surf-crest: #c1e6ba;
+  --color-aqua-spring: #eaf8e7;
+  --color-primary: #6467f2;
+  --color-success: #21c45d;
+  --color-pending: #f0d411;
+  --color-error: #ef4343;
+  --color-neutral: #f9fafb;
+  --color-neutral-600: #4b5563;
+
+  --font-display: "Lato", sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {

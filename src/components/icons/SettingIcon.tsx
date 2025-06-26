@@ -7,10 +7,13 @@ type SettingIconProps = {
 
 const SettingIcon: React.FC<SettingIconProps> = ({ onClick, className }) => {
   return (
-    <button onClick={onClick} className={className}>
+    <button
+      onClick={onClick}
+      className={`cursor-pointer hover:text-green-400 ${className}`}
+    >
       <svg
-        width="24"
-        height="24"
+        width="1.5em"
+        height="1.5em"
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

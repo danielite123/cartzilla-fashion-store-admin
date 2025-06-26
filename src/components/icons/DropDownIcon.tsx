@@ -18,7 +18,7 @@ const DropDownIcon: React.FC<DropDownIconProps> = ({ onClick, className }) => {
         <path
           d="M11 0.500038C11 0.500038 7.31756 5.49999 5.99996 5.5C4.68237 5.50001 1 0.499999 1 0.499999"
           stroke="currentColor"
-          strokeWidth="2"
+          strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />

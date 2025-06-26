@@ -1,5 +1,4 @@
 import Image, { StaticImageData } from "next/image";
-import { DropDownIcon } from "../icons";
 
 type AvatarProps = {
   src: string | StaticImageData;
@@ -15,7 +14,7 @@ const Avatar: React.FC<AvatarProps> = ({
   className,
 }) => {
   return (
-    <div className={`flex flex-row gap-3 items-center ${className}`}>
+    <div className={className}>
       <div
         className="rounded-full overflow-hidden relative"
         style={{ width: size, height: size }}
@@ -28,7 +27,6 @@ const Avatar: React.FC<AvatarProps> = ({
           className="object-fit"
         />
       </div>
-      <DropDownIcon className="w-4 h-4 text-green-400 fill-current" />
     </div>
   );
 };
