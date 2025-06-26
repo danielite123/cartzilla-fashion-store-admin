@@ -8,34 +8,24 @@ import {
   StarIcon,
 } from "@/components/icons";
 
-export interface SidebarRoute {
-  name: string;
-  path?: string;
-  icon: React.ReactNode;
-  children?: SidebarRoute[];
-}
-
-export const sidebarRoutes: {
-  title: string;
-  children: SidebarRoute[];
-}[] = [
+export const sidebarRoutes = [
   {
     title: "Main Menu",
     children: [
       {
         name: "Dashboard",
         path: "/",
-        icon: <HomeIcon className="text-neutral-500" />,
+        icon: HomeIcon,
       },
       {
         name: "Order Management",
         path: "/orders",
-        icon: <ShoppingCartIcon className="text-neutral-500" />,
+        icon: ShoppingCartIcon,
       },
       {
         name: "Customer",
         path: "/users",
-        icon: <GroupUsersIcon className="text-neutral-500" />,
+        icon: GroupUsersIcon,
       },
     ],
   },
@@ -45,22 +35,22 @@ export const sidebarRoutes: {
       {
         name: "Product",
         path: "/products",
-        icon: <MailboxIcon className="text-neutral-500" />,
+        icon: MailboxIcon,
       },
       {
         name: "Category",
         path: "/categories",
-        icon: <SearchBoxIcon className="text-neutral-500 " />,
+        icon: SearchBoxIcon,
       },
       {
         name: "Color",
         path: "/colors",
-        icon: <ColorPaletteIcon className="text-neutral-500 " />,
+        icon: ColorPaletteIcon,
       },
       {
         name: "Brand",
         path: "/brands",
-        icon: <StarIcon className="text-neutral-500 " />,
+        icon: StarIcon,
       },
     ],
   },

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { sidebarRoutes } from "@/routes/sidebar-routes";
 import AppLogo from "../ui/app-logo";
 import { CartIcon, LogoutIcon, SkipBackIcon } from "../icons";
@@ -9,6 +8,7 @@ import Avatar from "../ui/Avatar";
 import AvatarImage from "@/assets/avatar'.jpg";
 import { useAuthStore } from "@/store/auth-store";
 import { paths } from "@/routes/path";
+import SidebarNavItem from "../ui/sidebar-item";
 
 export default function SideBar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -64,30 +64,15 @@ export default function SideBar() {
                 </p>
               )}
               <div className={`flex flex-col ${collapsed ? "gap-4" : "gap-3"}`}>
-                {section.children.map((route, idx) => {
-                  const content = (
-                    <div
-                      className={`flex items-center gap-2 px-3 py-2 rounded-md w-full hover:bg-gray-100 active:bg-gray-200 cursor-pointer transition-colors ${
-                        collapsed ? "justify-center min-h-[40px]" : "pl-4"
-                      }`}
-                    >
-                      {route.icon}
-                      {!collapsed && (
-                        <span className="font-display text-[14px] text-neutral-500">
-                          {route.name}
-                        </span>
-                      )}
-                    </div>
-                  );
-
-                  return route.path ? (
-                    <Link key={idx} href={route.path}>
-                      {content}
-                    </Link>
-                  ) : (
-                    <div key={idx}>{content}</div>
-                  );
-                })}
+                {section.children.map((route, idx) => (
+                  <SidebarNavItem
+                    key={idx}
+                    href={route.path || ""}
+                    name={route.name}
+                    icon={route.icon}
+                    collapsed={collapsed}
+                  />
+                ))}
               </div>
             </div>
           ))}
