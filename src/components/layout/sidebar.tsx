@@ -4,12 +4,26 @@ import { useState } from "react";
 import Link from "next/link";
 import { sidebarRoutes } from "@/routes/sidebar-routes";
 import AppLogo from "../ui/app-logo";
-import { LogoutIcon, SkipBackIcon } from "../icons";
+import { CartIcon, LogoutIcon, SkipBackIcon } from "../icons";
 import Avatar from "../ui/Avatar";
 import AvatarImage from "@/assets/avatar'.jpg";
+import { useAuthStore } from "@/store/auth-store";
+import { paths } from "@/routes/path";
 
 export default function SideBar() {
   const [collapsed, setCollapsed] = useState(false);
+  const logout = useAuthStore((state) => state.logout);
+
+  const handleLogout = () => {
+    try {
+      logout();
+
+      window.location.href = paths.auth.login;
+    } catch (error) {
+      console.error(error);
+      throw new Error("Not Logout");
+    }
+  };
 
   return (
     <div
@@ -17,15 +31,24 @@ export default function SideBar() {
         collapsed ? "w-[70px]" : "w-[220px]"
       }`}
     >
-      <div
-        className={`h-[96px] flex items-center w-full p-3 transition-all duration-300 ${
-          collapsed ? "justify-center" : "justify-between"
-        }`}
-      >
-        {!collapsed && <AppLogo />}
+      <div className="h-[96px] relative w-full flex items-center transition-all duration-300">
+        <div
+          className={`flex-1 ${
+            collapsed ? "flex justify-center items-center" : "px-3"
+          }`}
+        >
+          {collapsed ? (
+            <div className="text-ocean-green">
+              <CartIcon />
+            </div>
+          ) : (
+            <AppLogo />
+          )}
+        </div>
+
         <SkipBackIcon
-          className={`text-neutral-500 fill-current cursor-pointer transition-transform duration-300 ${
-            collapsed ? "rotate-180" : ""
+          className={`absolute top-1/2 -translate-y-1/2 text-neutral-500 fill-current cursor-pointer transition-transform duration-300 ${
+            collapsed ? "rotate-180 right-[-16px]" : "right-2"
           }`}
           onClick={() => setCollapsed(!collapsed)}
         />
@@ -88,7 +111,10 @@ export default function SideBar() {
               </div>
             </div>
           )}
-          <LogoutIcon className="flex-shrink-0 text-error cursor-pointer" />
+          <LogoutIcon
+            className="flex-shrink-0 text-error cursor-pointer"
+            onClick={handleLogout}
+          />
         </div>
       </div>
     </div>
