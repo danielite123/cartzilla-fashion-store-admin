@@ -7,7 +7,7 @@ interface SidebarNavItemProps {
   href: string;
   name: string;
   icon: React.ComponentType<{ className?: string }>;
-  collapsed: boolean;
+  collapsed?: boolean;
 }
 
 export default function SidebarNavItem({

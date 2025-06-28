@@ -12,13 +12,13 @@ const ColorPaletteIcon: React.FC<ColorPaletteIconProps> = ({
   return (
     <button onClick={onClick} className={className}>
       <svg
-        width="1.3em"
-        height="1.3em"
+        width="1.4em"
+        height="1.4em"
         viewBox="0 0 64 64"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         stroke="currentColor"
-        strokeWidth="3"
+        strokeWidth="4"
         strokeLinecap="round"
       >
         <path d="M34.07 50.93S53.86 44.38 45.68 26.6c0 0-4.8-11.46-19.31-13.27S8.3 20.8 8.3 20.8 1.81 33.68 13.1 35c1.62.19 5-.56 6.4 1.33s.29 4.2 0 8.8c-.16 2.56 1.77 8.74 14.57 5.8Z" />

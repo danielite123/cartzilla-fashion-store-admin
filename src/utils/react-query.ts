@@ -25,3 +25,9 @@ export const queryClient = new QueryClient({
     },
   }),
 });
+
+export const queryKeys = {
+  user: {
+    root: [{ type: "user" }],
+  },
+};

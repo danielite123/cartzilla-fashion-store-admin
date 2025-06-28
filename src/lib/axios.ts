@@ -13,17 +13,28 @@ const removeToken = (): void => {
   localStorageRemoveItem("access_token");
 };
 
-axiosInstance.interceptors.request.use(
-  (config) => {
-    const accessToken = localStorageGetItem("access_token");
+axiosInstance.interceptors.request.use((config) => {
+  const rawAuth = localStorageGetItem("auth");
 
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+  if (rawAuth) {
+    try {
+      const parsed = JSON.parse(rawAuth);
+      const token = parsed?.state?.accessToken;
+
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      } else {
+        console.warn("No token in parsed auth");
+      }
+    } catch (e) {
+      console.error("Failed to parse auth from localStorage:", e);
     }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+  } else {
+    console.warn("⚠️ No auth found in localStorage");
+  }
+
+  return config;
+});
 
 axiosInstance.interceptors.response.use(
   (response) => response,
@@ -103,5 +114,8 @@ export const endpoints = {
   auth: {
     login: "/auth/login/admin",
     register: "/auth/register/admin",
+  },
+  user: {
+    profile: "/users/profile",
   },
 };

@@ -1,5 +1,6 @@
 import {
-  ColorPaletteIcon,
+  ChatIcon,
+  CreditCardIcon,
   GroupUsersIcon,
   HomeIcon,
   MailboxIcon,
@@ -27,6 +28,16 @@ export const sidebarRoutes = [
         path: "/users",
         icon: GroupUsersIcon,
       },
+      {
+        name: "Mails",
+        path: "/mails",
+        icon: ChatIcon,
+      },
+      {
+        name: "Transaction",
+        path: "/transaction",
+        icon: CreditCardIcon,
+      },
     ],
   },
   {
@@ -42,11 +53,7 @@ export const sidebarRoutes = [
         path: "/categories",
         icon: SearchBoxIcon,
       },
-      {
-        name: "Color",
-        path: "/colors",
-        icon: ColorPaletteIcon,
-      },
+
       {
         name: "Brand",
         path: "/brands",

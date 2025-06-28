@@ -1,15 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { sidebarRoutes } from "@/routes/sidebar-routes";
 import { LogoutIcon } from "../icons";
 import Avatar from "../ui/Avatar";
 import AvatarImage from "@/assets/avatar'.jpg";
 import { useAuthStore } from "@/store/auth-store";
 import { paths } from "@/routes/path";
+import SidebarNavItem from "../ui/sidebar-item";
 
 export default function MobileSideBar() {
   const logout = useAuthStore((state) => state.logout);
+  const user = useAuthStore((state) => state.user);
 
   const handleLogout = () => {
     try {
@@ -31,18 +32,14 @@ export default function MobileSideBar() {
                 {section.title}
               </p>
               <div className="flex flex-col gap-3">
-                {section.children.map((route, idx) => {
-                  return (
-                    <Link key={idx} href={route.path || "#"}>
-                      <div className="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 active:bg-gray-200 cursor-pointer transition-colors">
-                        {route.icon}
-                        <span className="font-display text-[14px] text-neutral-700 dark:text-neutral-300">
-                          {route.name}
-                        </span>
-                      </div>
-                    </Link>
-                  );
-                })}
+                {section.children.map((route, idx) => (
+                  <SidebarNavItem
+                    key={idx}
+                    href={route.path || ""}
+                    name={route.name}
+                    icon={route.icon}
+                  />
+                ))}
               </div>
             </div>
           ))}
@@ -51,13 +48,20 @@ export default function MobileSideBar() {
 
       <div className="min-h-[80px] px-3 flex items-center dark:border-gray-700">
         <Avatar src={AvatarImage} />
+
         <div className="flex flex-col ml-3 font-display">
-          <h1 className="text-neutral-800 dark:text-white font-semibold truncate max-w-[100px]">
-            Daniel
-          </h1>
-          <p className="text-xs text-light-grey truncate max-w-[100px]">
-            danielite100@gmail.com
-          </p>
+          {!user ? (
+            <div className="text-sm text-neutral-500">Loading...</div>
+          ) : (
+            <>
+              <h1 className="text-neutral-800 dark:text-white font-semibold truncate max-w-[100px]">
+                {user.firstname}
+              </h1>
+              <p className="text-xs text-light-grey truncate max-w-[100px]">
+                {user.email}
+              </p>
+            </>
+          )}
         </div>
         <LogoutIcon
           className="ml-auto text-error cursor-pointer"

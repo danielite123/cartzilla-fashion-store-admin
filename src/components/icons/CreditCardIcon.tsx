@@ -12,12 +12,12 @@ const CreditCardIcon: React.FC<CreditCardIconProps> = ({
   return (
     <button onClick={onClick} className={className}>
       <svg
-        width="20"
-        height="20"
+        width="1.3em"
+        height="1.3em"
         viewBox="0 0 20 20"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        stroke="black"
+        stroke="currentColor"
         strokeWidth="1.65"
         strokeLinecap="round"
         strokeLinejoin="round"

@@ -9,10 +9,15 @@ import AvatarImage from "@/assets/avatar'.jpg";
 import { useAuthStore } from "@/store/auth-store";
 import { paths } from "@/routes/path";
 import SidebarNavItem from "../ui/sidebar-item";
+import { useGetUser } from "@/api/user";
 
 export default function SideBar() {
   const [collapsed, setCollapsed] = useState(false);
   const logout = useAuthStore((state) => state.logout);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const { profileData, profileLoading } = useGetUser({
+    enabled: !!accessToken,
+  });
 
   const handleLogout = () => {
     try {
@@ -63,7 +68,7 @@ export default function SideBar() {
                   {section.title}
                 </p>
               )}
-              <div className={`flex flex-col ${collapsed ? "gap-4" : "gap-3"}`}>
+              <div className={`flex flex-col ${collapsed ? "gap-3" : "gap-3"}`}>
                 {section.children.map((route, idx) => (
                   <SidebarNavItem
                     key={idx}
@@ -86,16 +91,24 @@ export default function SideBar() {
           {!collapsed && (
             <div className="flex items-center gap-3 overflow-hidden">
               <Avatar src={AvatarImage} />
+
               <div className="flex flex-col items-start font-display overflow-hidden">
-                <h1 className="text-neutral-800 font-semibold truncate max-w-[100px]">
-                  Daniel
-                </h1>
-                <p className="text-xs text-light-grey truncate max-w-[100px]">
-                  danielite100@gmail.com
-                </p>
+                {profileLoading ? (
+                  <div className="text-sm text-neutral-500">Loading...</div>
+                ) : (
+                  <>
+                    <h1 className="text-neutral-800 font-semibold truncate max-w-[100px]">
+                      {profileData?.firstname} {profileData?.lastname}
+                    </h1>
+                    <p className="text-xs text-light-grey truncate max-w-[100px]">
+                      {profileData?.email}
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           )}
+
           <LogoutIcon
             className="flex-shrink-0 text-error cursor-pointer"
             onClick={handleLogout}
