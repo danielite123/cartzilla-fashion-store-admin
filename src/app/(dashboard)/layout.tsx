@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
 import Header from "@/components/layout/header";
-import SideBar from "@/components/layout/sidebar";
+import Sidebar from "@/components/layout/Sidebar"; // Updated import
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   useAuthGuard();
