@@ -11,7 +11,7 @@ export function useGetUser(option?: { enabled: boolean }) {
 
   const shouldFetch = option?.enabled ?? !!accessToken;
 
-  const { data, isLoading, refetch } = useQuery<IUserItem>({
+  const { data, isLoading, refetch, isError, error } = useQuery<IUserItem>({
     ...option,
     queryKey: queryKeys.user.root,
     queryFn: () => fetcher(endpoints.user.profile),
@@ -29,7 +29,9 @@ export function useGetUser(option?: { enabled: boolean }) {
       profileData: data,
       profileRefetch: refetch,
       profileLoading: isLoading,
+      profileError: error,
+      isProfileError: isError,
     }),
-    [data, isLoading, refetch]
+    [data, isLoading, refetch, error, isError]
   );
 }
