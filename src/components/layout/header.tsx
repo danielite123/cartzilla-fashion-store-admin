@@ -34,7 +34,7 @@ export default function Header() {
       </div>
 
       <SidebarDialog isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)}>
-        <Sidebar />
+        <Sidebar variant="mobile" />
       </SidebarDialog>
     </>
   );

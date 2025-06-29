@@ -1,124 +1,42 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Table from "@/components/ui/table";
-import React, { useState } from "react";
+import { MessageSquare, Trash2 } from "lucide-react";
+import React from "react";
 
-const sampleCustomers = [
-  {
-    id: 1,
-    customerId: "#CUST001",
-    name: "John Doe",
-    phone: "+1234567890",
-    orderCount: 25,
-    totalSpend: 3450.0,
-    status: "Active",
-  },
-  {
-    id: 2,
-    customerId: "#CUST002",
-    name: "John Doe",
-    phone: "+1234567890",
-    orderCount: 25,
-    totalSpend: 3450.0,
-    status: "Active",
-  },
-  {
-    id: 3,
-    customerId: "#CUST003",
-    name: "John Doe",
-    phone: "+1234567890",
-    orderCount: 25,
-    totalSpend: 3450.0,
-    status: "Active",
-  },
-  {
-    id: 4,
-    customerId: "#CUST004",
-    name: "John Doe",
-    phone: "+1234567890",
-    orderCount: 25,
-    totalSpend: 3450.0,
-    status: "Active",
-  },
-  {
-    id: 5,
-    customerId: "#CUST005",
-    name: "Jane Smith",
-    phone: "+1234567890",
-    orderCount: 5,
-    totalSpend: 250.0,
-    status: "Inactive",
-  },
-  {
-    id: 6,
-    customerId: "#CUST006",
-    name: "Emily Davis",
-    phone: "+1234567890",
-    orderCount: 30,
-    totalSpend: 4600.0,
-    status: "VIP",
-  },
-  {
-    id: 7,
-    customerId: "#CUST007",
-    name: "Jane Smith",
-    phone: "+1234567890",
-    orderCount: 5,
-    totalSpend: 250.0,
-    status: "Inactive",
-  },
-  {
-    id: 8,
-    customerId: "#CUST008",
-    name: "John Doe",
-    phone: "+1234567890",
-    orderCount: 25,
-    totalSpend: 3450.0,
-    status: "Active",
-  },
-  {
-    id: 9,
-    customerId: "#CUST009",
-    name: "Emily Davis",
-    phone: "+1234567890",
-    orderCount: 30,
-    totalSpend: 4600.0,
-    status: "VIP",
-  },
-  {
-    id: 10,
-    customerId: "#CUST010",
-    name: "Jane Smith",
-    phone: "+1234567890",
-    orderCount: 5,
-    totalSpend: 250.0,
-    status: "Inactive",
-  },
-  {
-    id: 11,
-    customerId: "#CUST011",
-    name: "Michael Johnson",
-    phone: "+1987654321",
-    orderCount: 15,
-    totalSpend: 1200.5,
-    status: "Active",
-  },
-  {
-    id: 12,
-    customerId: "#CUST012",
-    name: "Sarah Wilson",
-    phone: "+1987654321",
-    orderCount: 2,
-    totalSpend: 80.0,
-    status: "Inactive",
-  },
-];
-
-type Customer = (typeof sampleCustomers)[0];
+export interface ColumnDef<T> {
+  key: keyof T | string;
+  header: string;
+  sortable?: boolean;
+  cell?: (item: T) => React.ReactNode;
+}
 
 const ProductPage = () => {
-  const columns: Column<Customer>[] = [
-    { key: "customerId", header: "Customer ID", sortable: true },
+  const customerData = [];
+
+  for (let i = 1; i <= 30; i++) {
+    customerData.push({
+      id: `CUST${String(i).padStart(3, "0")}`,
+      name: `Customer ${i}`,
+      phone: "+1987654321",
+      orderCount: i * 2,
+      totalSpend: i * 150.75,
+      status: i % 3 === 0 ? "Active" : i % 3 === 1 ? "Inactive" : "VIP",
+    });
+  }
+
+  type Customer = {
+    id: string;
+    name: string;
+    phone: string;
+    orderCount: number;
+    totalSpend: number;
+    status: "Active" | "Inactive" | "VIP";
+  };
+
+  const columns: ColumnDef<Customer>[] = [
+    { key: "id", header: "Customer ID", sortable: true },
     { key: "name", header: "Name", sortable: true },
     { key: "phone", header: "Phone" },
     { key: "orderCount", header: "Order Count", sortable: true },
@@ -126,33 +44,96 @@ const ProductPage = () => {
       key: "totalSpend",
       header: "Total Spend",
       sortable: true,
-      render: (item) => `$${item.totalSpend.toFixed(2)}`,
+      cell: (item: Customer) => `$${item.totalSpend.toFixed(2)}`,
     },
-    { key: "status", header: "Status", sortable: true },
+    {
+      key: "status",
+      header: "Status",
+      cell: (item: Customer) => (
+        <span
+          className={`px-2 py-1 text-xs font-medium rounded-full flex items-center gap-1 w-fit ${
+            item.status === "Active"
+              ? "bg-green-100 text-green-800"
+              : item.status === "VIP"
+              ? "bg-yellow-100 text-yellow-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
+          ● {item.status}
+        </span>
+      ),
+    },
+    {
+      key: "actions" as any,
+      header: "Action",
+      cell: (_item: Customer) => (
+        <div className="flex items-center space-x-2">
+          <button className="text-gray-500 hover:text-gray-700">
+            <MessageSquare className="h-5 w-5" />
+          </button>
+          <button className="text-gray-500 hover:text-red-600">
+            <Trash2 className="h-5 w-5" />
+          </button>
+        </div>
+      ),
+    },
   ];
 
-  const [customers, setCustomers] = useState(sampleCustomers);
-
-  const handleAction = (item: Customer, action: "edit" | "delete") => {
-    console.log(`${action} item:`, item);
-    if (action === "delete") {
-      // Example of how to handle delete:
-      // setCustomers(prev => prev.filter(c => c.id !== item.id));
-    }
+  const handleSort = (columnKey: keyof Customer) => {
+    console.log(`Sorting by ${String(columnKey)}`);
   };
 
+  const renderCustomerCard = (customer: Customer) => (
+    <div className="space-y-3">
+      <div className="flex justify-between items-center">
+        <span className="font-bold text-lg">{customer.name}</span>
+        <span
+          className={`px-2 py-1 text-xs font-medium rounded-full flex items-center gap-1 ${
+            customer.status === "Active"
+              ? "bg-green-100 text-green-800"
+              : customer.status === "VIP"
+              ? "bg-yellow-100 text-yellow-800"
+              : "bg-red-100 text-red-800"
+          }`}
+        >
+          ● {customer.status}
+        </span>
+      </div>
+      <div className="text-sm text-gray-600 space-y-1">
+        <p>
+          <strong>ID:</strong> {customer.id}
+        </p>
+        <p>
+          <strong>Phone:</strong> {customer.phone}
+        </p>
+        <p>
+          <strong>Orders:</strong> {customer.orderCount}
+        </p>
+        <p>
+          <strong>Total Spend:</strong> ${customer.totalSpend.toFixed(2)}
+        </p>
+      </div>
+      <div className="flex items-center space-x-2 pt-2 border-t border-gray-200 mt-2">
+        <button className="text-gray-500 hover:text-gray-700">
+          <MessageSquare className="h-5 w-5" />
+        </button>
+        <button className="text-gray-500 hover:text-red-600">
+          <Trash2 className="h-5 w-5" />
+        </button>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 min-h-screen p-4 sm:p-8">
+      <h1 className="text-2xl font-bold mb-6">Customer List</h1>
       <Table<Customer>
         columns={columns}
-        data={customers}
-        onRowAction={handleAction}
+        data={customerData}
+        onSort={handleSort}
+        showRowNumber={true}
+        renderRowCard={renderCustomerCard}
       />
-
-      <h2 className="text-xl font-bold text-center mt-12 mb-4">
-        Empty Table Example
-      </h2>
-      <Table<Customer> columns={columns} data={[]} onRowAction={handleAction} />
     </div>
   );
 };
