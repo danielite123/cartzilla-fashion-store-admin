@@ -7,7 +7,7 @@ import PageHeader from "../ui/page-header";
 import ThemeToggle from "@/components/layout/theme-toggle";
 import { useState } from "react";
 import SidebarDialog from "../ui/sidebar-dialog";
-import MobileSideBar from "./mobile-sidebar";
+import Sidebar from "./Sidebar"; // Changed from MobileSideBar
 
 export default function Header() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -34,7 +34,7 @@ export default function Header() {
       </div>
 
       <SidebarDialog isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)}>
-        <MobileSideBar />
+        <Sidebar />
       </SidebarDialog>
     </>
   );
