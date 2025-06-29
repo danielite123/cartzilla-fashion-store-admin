@@ -65,74 +65,77 @@ export default function Table<T extends { id: string | number }>({
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
-      <div className="hidden md:block">
-        <div className="overflow-x-auto">
-          <div className="min-w-full">
-            <div className="flex bg-gray-50 rounded-t-lg px-6 py-4 font-medium text-gray-600 text-sm">
-              {showRowNumber && (
-                <div className="w-24 flex items-center shrink-0">
-                  <input
-                    type="checkbox"
-                    checked={allOnPageSelected}
-                    onChange={handleSelectAll}
-                    className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-4"
-                  />
-                  No
+      {/* This div handles visibility and horizontal scrolling for medium screens and up */}
+      <div className="hidden md:block overflow-x-auto">
+        {/* This div ensures its content can grow, triggering the scrollbar on the parent if needed */}
+        <div className="min-w-full align-middle">
+          {/* Table Header */}
+          <div className="flex bg-gray-50 rounded-t-lg px-6 py-4 font-medium text-gray-600 text-sm">
+            {showRowNumber && (
+              <div className="w-24 flex items-center shrink-0">
+                <input
+                  type="checkbox"
+                  checked={allOnPageSelected}
+                  onChange={handleSelectAll}
+                  className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-4"
+                />
+                No
+              </div>
+            )}
+            {columns.map((col) => (
+              <div key={String(col.key)} className="flex-1 px-4 py-2">
+                <div className="flex items-center">
+                  {col.header}
+                  {col.sortable && (
+                    <button
+                      onClick={() => onSort && onSort(col.key)}
+                      className="ml-2"
+                    >
+                      <ChevronsUpDown className="h-4 w-4 text-gray-400" />
+                    </button>
+                  )}
                 </div>
-              )}
-              {columns.map((col) => (
-                <div key={String(col.key)} className="flex-1 px-4 py-2">
-                  <div className="flex items-center">
-                    {col.header}
-                    {col.sortable && (
-                      <button
-                        onClick={() => onSort && onSort(col.key)}
-                        className="ml-2"
-                      >
-                        <ChevronsUpDown className="h-4 w-4 text-gray-400" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
 
-            <div>
-              {paginatedData.length > 0 ? (
-                paginatedData.map((item, index) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center border-b border-gray-200 last:border-b-0 hover:bg-gray-50"
-                  >
-                    {showRowNumber && (
-                      <div className="w-24 px-6 py-4 flex items-center shrink-0">
-                        <input
-                          type="checkbox"
-                          checked={selectedRows.has(item.id)}
-                          onChange={() => handleSelectRow(item.id)}
-                          className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-4"
-                        />
-                        {(currentPage - 1) * rowsPerPage + index + 1}
-                      </div>
-                    )}
-                    {columns.map((col) => (
-                      <div
-                        key={`${String(col.key)}-${item.id}`}
-                        className="flex-1 px-4 py-4"
-                      >
-                        {col.cell ? col.cell(item) : String(item[col.key])}
-                      </div>
-                    ))}
-                  </div>
-                ))
-              ) : (
-                <NoData />
-              )}
-            </div>
+          {/* Table Body */}
+          <div>
+            {paginatedData.length > 0 ? (
+              paginatedData.map((item, index) => (
+                <div
+                  key={item.id}
+                  className="flex items-center border-b border-gray-200 last:border-b-0 hover:bg-gray-50"
+                >
+                  {showRowNumber && (
+                    <div className="w-24 px-6 py-4 flex items-center shrink-0">
+                      <input
+                        type="checkbox"
+                        checked={selectedRows.has(item.id)}
+                        onChange={() => handleSelectRow(item.id)}
+                        className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-4"
+                      />
+                      {(currentPage - 1) * rowsPerPage + index + 1}
+                    </div>
+                  )}
+                  {columns.map((col) => (
+                    <div
+                      key={`${String(col.key)}-${item.id}`}
+                      className="flex-1 px-4 py-4"
+                    >
+                      {col.cell ? col.cell(item) : String(item[col.key])}
+                    </div>
+                  ))}
+                </div>
+              ))
+            ) : (
+              <NoData />
+            )}
           </div>
         </div>
       </div>
 
+      {/* Mobile card view */}
       <div className="md:hidden">
         {paginatedData.length > 0 ? (
           <div className="space-y-4">
