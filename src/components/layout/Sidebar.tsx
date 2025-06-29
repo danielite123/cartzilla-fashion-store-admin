@@ -9,20 +9,17 @@ import AvatarImage from "@/assets/avatar'.jpg";
 import { useAuthStore } from "@/store/auth-store";
 import { paths } from "@/routes/path";
 import SidebarNavItem from "../ui/sidebar-item";
-import { useGetUser } from "@/api/user"; // Adjusted path if useGetUser is directly from user.ts
+import { useGetUser } from "@/api/user";
 
 export default function Sidebar() {
-  // State for desktop sidebar collapse
   const [collapsed, setCollapsed] = useState(false);
 
-  // Auth store and user data fetching
   const logout = useAuthStore((state) => state.logout);
   const accessToken = useAuthStore((state) => state.accessToken);
-  const { profileData, profileLoading, isProfileError } = useGetUser({ // Removed profileError as it's not used in the provided JSX
+  const { profileData, profileLoading, isProfileError } = useGetUser({
     enabled: !!accessToken,
   });
 
-  // User from auth store, fallback for mobile until profileData is loaded
   const authUser = useAuthStore((state) => state.user);
 
   const handleLogout = () => {
@@ -31,17 +28,13 @@ export default function Sidebar() {
       window.location.href = paths.auth.login;
     } catch (error) {
       console.error(error);
-      // It's generally better to inform the user through UI if possible
-      // throw new Error("Not Logout"); // Avoid throwing errors that aren't caught meaningfully
     }
   };
 
-  // Determine user information, prioritizing profileData from useGetUser
   const user = profileData || authUser;
 
   return (
     <>
-      {/* Mobile Sidebar */}
       <div className="h-full w-full max-w-xs flex flex-col bg-white dark:bg-gray-900 md:hidden">
         <div className="flex-1 overflow-y-auto p-2">
           <div className="flex flex-col gap-6">
@@ -127,7 +120,9 @@ export default function Sidebar() {
                     {section.title}
                   </p>
                 )}
-                <div className={`flex flex-col ${collapsed ? "gap-3" : "gap-3"}`}>
+                <div
+                  className={`flex flex-col ${collapsed ? "gap-3" : "gap-3"}`}
+                >
                   {section.children.map((route, idx) => (
                     <SidebarNavItem
                       key={`desktop-item-${idx}`}
@@ -154,7 +149,9 @@ export default function Sidebar() {
                   {profileLoading ? (
                     <div className="text-sm text-neutral-500">Loading...</div>
                   ) : isProfileError ? (
-                    <div className="text-sm text-red-500">Error loading profile</div>
+                    <div className="text-sm text-red-500">
+                      Error loading profile
+                    </div>
                   ) : profileData ? (
                     <>
                       <h1 className="text-neutral-800 dark:text-white font-semibold truncate max-w-[100px]">
@@ -165,7 +162,9 @@ export default function Sidebar() {
                       </p>
                     </>
                   ) : (
-                     <div className="text-sm text-neutral-500">User not found</div>
+                    <div className="text-sm text-neutral-500">
+                      User not found
+                    </div>
                   )}
                 </div>
               </div>
