@@ -7,10 +7,14 @@ import AvatarImage from "@/assets/avatar'.jpg";
 import { useAuthStore } from "@/store/auth-store";
 import { paths } from "@/routes/path";
 import SidebarNavItem from "../ui/sidebar-item";
+import { useGetUser } from "@/api/user";
 
 export default function MobileSideBar() {
   const logout = useAuthStore((state) => state.logout);
-  const user = useAuthStore((state) => state.user);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const { profileData, profileLoading, isProfileError } = useGetUser({
+    enabled: !!accessToken,
+  });
 
   const handleLogout = () => {
     try {
@@ -50,15 +54,17 @@ export default function MobileSideBar() {
         <Avatar src={AvatarImage} />
 
         <div className="flex flex-col ml-3 font-display">
-          {!user ? (
+          {profileLoading ? (
             <div className="text-sm text-neutral-500">Loading...</div>
+          ) : isProfileError ? (
+            <div className="text-sm text-red-500">Error</div>
           ) : (
             <>
               <h1 className="text-neutral-800 dark:text-white font-semibold truncate max-w-[100px]">
-                {user.firstname}
+                {profileData?.firstname}
               </h1>
               <p className="text-xs text-light-grey truncate max-w-[100px]">
-                {user.email}
+                {profileData?.email}
               </p>
             </>
           )}
