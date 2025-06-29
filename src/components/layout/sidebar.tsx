@@ -15,10 +15,9 @@ export default function SideBar() {
   const [collapsed, setCollapsed] = useState(false);
   const logout = useAuthStore((state) => state.logout);
   const accessToken = useAuthStore((state) => state.accessToken);
-  const { profileData, profileLoading, isProfileError, profileError } =
-    useGetUser({
-      enabled: !!accessToken,
-    });
+  const { profileData, profileLoading, isProfileError } = useGetUser({
+    enabled: !!accessToken,
+  });
 
   const handleLogout = () => {
     try {
@@ -97,7 +96,9 @@ export default function SideBar() {
                 {profileLoading ? (
                   <div className="text-sm text-neutral-500">Loading...</div>
                 ) : isProfileError ? (
-                  <div className="text-sm text-red-500">Error loading profile</div>
+                  <div className="text-sm text-red-500">
+                    Error loading profile
+                  </div>
                 ) : (
                   <>
                     <h1 className="text-neutral-800 font-semibold truncate max-w-[100px]">
