@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { IUserItem } from "@/types/user";
 
 interface AuthState {
   accessToken: string | null;
-  user: any | null;
+  user: IUserItem | null;
   setToken: (token: string) => void;
-  setUser: (user: any) => void;
+  setUser: (user: IUserItem) => void;
   logout: () => void;
 }
 
