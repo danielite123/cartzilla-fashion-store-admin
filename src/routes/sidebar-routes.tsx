@@ -25,7 +25,7 @@ export const sidebarRoutes = [
       },
       {
         name: "Customer",
-        path: "/users",
+        path: "/customers",
         icon: GroupUsersIcon,
       },
       {

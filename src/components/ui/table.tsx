@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useMemo } from "react";
-import { ChevronDown, ChevronsUpDown, AlertCircle } from "lucide-react";
+import { ChevronDown,  AlertCircle, ArrowUpDown } from "lucide-react";
 
 // Types
 export interface TableHeadItem {
@@ -13,22 +14,19 @@ export interface TableProps {
   children: React.ReactNode;
   data: any[];
   onSort?: (columnId: string) => void;
-  showRowNumber?: boolean;
   renderRowCard?: (item: any, index: number) => React.ReactNode;
   renderRow?: (item: any, index: number) => React.ReactNode;
   initialPage?: number;
   rowsPerPage?: number;
   className?: string;
-  columns?: TableHeadItem[]; // Add columns prop for consistent widths
+  columns: TableHeadItem[]; // Columns are now essential for alignment logic
 }
 
 export interface TableHeadProps {
   items: TableHeadItem[];
   onSort?: (columnId: string) => void;
-  showRowNumber?: boolean;
   className?: string;
-  allOnPageSelected?: boolean;
-  onSelectAll?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  style?: React.CSSProperties; // Add style prop for grid layout
 }
 
 export interface TableBodyProps {
@@ -37,20 +35,17 @@ export interface TableBodyProps {
   data?: any[];
   currentPage?: number;
   rowsPerPage?: number;
-  showRowNumber?: boolean;
-  selectedRows?: Set<string | number>;
-  onSelectRow?: (rowNumber: number) => void;
-  columns?: TableHeadItem[]; // Add columns prop
+  columns?: TableHeadItem[]; // Add columns prop for passing to rows
+  renderRow?: (item: any, index: number) => React.ReactNode;
+  gridStyle?: React.CSSProperties; // Add style prop for grid layout
 }
 
 export interface TableRowProps {
   children: React.ReactNode;
   className?: string;
   onClick?: () => void;
-  rowNumber?: number;
-  showRowNumber?: boolean;
-  selectedRows?: Set<string | number>;
-  onSelectRow?: (rowNumber: number) => void;
+  columns?: TableHeadItem[]; // Add columns prop to receive column definitions
+  style?: React.CSSProperties; // Add style prop for grid layout
 }
 
 export interface TableCellProps {
@@ -66,7 +61,6 @@ export default function Table({
   children,
   data,
   onSort,
-  showRowNumber = false,
   renderRowCard,
   renderRow,
   initialPage = 1,
@@ -75,7 +69,11 @@ export default function Table({
   columns,
 }: TableProps) {
   const [currentPage, setCurrentPage] = useState(initialPage);
-  const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set());
+
+  const gridStyle = useMemo(() => {
+    const template = `repeat(${columns.length}, minmax(120px, 1fr))`;
+    return { gridTemplateColumns: template };
+  }, [columns]);
 
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * rowsPerPage;
@@ -84,31 +82,8 @@ export default function Table({
 
   const totalPages = Math.ceil(data.length / rowsPerPage);
 
-  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      const allRowIds = new Set(paginatedData.map((item, index) => (currentPage - 1) * rowsPerPage + index + 1));
-      setSelectedRows(allRowIds);
-    } else {
-      setSelectedRows(new Set());
-    }
-  };
-
-  const handleSelectRow = (rowNumber: number) => {
-    setSelectedRows((prev) => {
-      const newSelection = new Set(prev);
-      if (newSelection.has(rowNumber)) {
-        newSelection.delete(rowNumber);
-      } else {
-        newSelection.add(rowNumber);
-      }
-      return newSelection;
-    });
-  };
-
-  const allOnPageSelected = paginatedData.length > 0 && selectedRows.size === paginatedData.length;
-
   return (
-    <div className={`bg-white rounded-lg shadow-sm ${className}`}>
+    <div className={`${className}`}>
       {/* Desktop and Tablet View */}
       <div className="hidden sm:block overflow-x-auto">
         <div className="min-w-full align-middle">
@@ -117,30 +92,29 @@ export default function Table({
               React.isValidElement(child) &&
               (child.type === TableHead ||
                 (typeof child.type === "function" &&
-                  (child.type as any).displayName === (TableHead as any).displayName))
+                  (child.type as any).displayName ===
+                    (TableHead as any).displayName))
             ) {
               return React.cloneElement(child as React.ReactElement<any>, {
+                items: columns,
                 onSort,
-                showRowNumber,
-                allOnPageSelected,
-                onSelectAll: handleSelectAll,
+                style: gridStyle,
               });
             }
             if (
               React.isValidElement(child) &&
               (child.type === TableBody ||
                 (typeof child.type === "function" &&
-                  (child.type as any).displayName === (TableBody as any).displayName))
+                  (child.type as any).displayName ===
+                    (TableBody as any).displayName))
             ) {
               return React.cloneElement(child as React.ReactElement<any>, {
                 data: paginatedData,
                 currentPage,
                 rowsPerPage,
-                showRowNumber,
-                selectedRows,
-                onSelectRow: handleSelectRow,
                 renderRow,
                 columns,
+                gridStyle,
               });
             }
             return child;
@@ -153,7 +127,10 @@ export default function Table({
         {paginatedData.length > 0 ? (
           <div className="space-y-4 p-4">
             {paginatedData.map((item, index) => (
-              <div key={index} className="bg-white rounded-lg p-4 border border-gray-200">
+              <div
+                key={index}
+                className="bg-white rounded-lg p-4 border border-gray-200"
+              >
                 {renderRowCard ? (
                   renderRowCard(item, (currentPage - 1) * rowsPerPage + index)
                 ) : (
@@ -182,48 +159,32 @@ export default function Table({
   );
 }
 
-// Table Head Component
 export function TableHead({
   items,
   onSort,
-  showRowNumber = false,
-  allOnPageSelected = false,
-  onSelectAll,
   className = "",
+  style,
 }: TableHeadProps) {
   return (
-    <div className={`flex justify-between bg-gray-50 rounded-lg px-3 sm:px-6 font-medium text-gray-600 text-sm ${className}`}>
-      {showRowNumber && (
-        <div className="w-8 sm:w-12 flex items-center shrink-0 py-2">
-          <input
-            type="checkbox"
-            checked={allOnPageSelected}
-            onChange={onSelectAll}
-            className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-1 sm:mr-2"
-          />
-          <span className="text-xs sm:text-sm font-medium text-gray-700">No.</span>
-        </div>
-      )}
+    <div
+      style={style}
+      className={`grid items-center bg-aqua-spring p-2 rounded-md font-medium text-gray-600 text-sm ${className}`}
+    >
       {items.map((item) => (
         <div
           key={item.id}
           className={`px-1 sm:px-2 py-2 truncate ${
-            item.responsive ? 'hidden lg:block' : ''
-          } ${
-            // Responsive column widths
-            items.length <= 3 ? 'w-24 sm:w-32 md:w-40' : 
-            items.length <= 5 ? 'w-20 sm:w-28 md:w-32' : 
-            'w-16 sm:w-24 md:w-28'
+            item.responsive ? "hidden lg:block" : ""
           }`}
         >
-          <div className="flex items-center">
+          <div className="flex items-center justify-center">
             <span className="text-xs sm:text-sm truncate">{item.label}</span>
             {item.sortable && onSort && (
               <button
                 onClick={() => onSort(item.id)}
                 className="ml-1 sm:ml-2 flex-shrink-0"
               >
-                <ChevronsUpDown className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
+                <ArrowUpDown className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
               </button>
             )}
           </div>
@@ -232,7 +193,7 @@ export function TableHead({
     </div>
   );
 }
-TableHead.displayName = 'TableHead';
+TableHead.displayName = "TableHead";
 
 // Table Body Component
 export function TableBody({
@@ -240,15 +201,11 @@ export function TableBody({
   data,
   currentPage,
   rowsPerPage,
-  showRowNumber,
-  selectedRows,
-  onSelectRow,
   renderRow,
-  columns,
+  columns, // Receive columns to pass to children
   className = "",
-}: TableBodyProps & {
-  renderRow?: (item: any, index: number) => React.ReactNode;
-}) {
+  gridStyle,
+}: TableBodyProps) {
   if (!data || data.length === 0) {
     return <NoData />;
   }
@@ -257,23 +214,34 @@ export function TableBody({
   if (renderRow) {
     return (
       <div className={className}>
-        {data.map((item, index) => renderRow(item, index))}
+        {data.map((item, index) => {
+          const rowElement = renderRow(item, index);
+          // Smartly inject props into the rendered TableRow for alignment
+          if (React.isValidElement(rowElement) && (rowElement.type === TableRow || (typeof rowElement.type === 'function' && (rowElement.type as any).displayName === (TableRow as any).displayName))) {
+            return React.cloneElement(
+              rowElement as React.ReactElement<any>,
+              {
+                key: index,
+                ...(rowElement.props || {}),
+                columns, // Pass columns down to the row
+                style: gridStyle,
+              }
+            );
+          }
+          return rowElement;
+        })}
       </div>
     );
   }
 
-  // Otherwise, render children (legacy approach)
   return (
     <div className={className}>
       {React.Children.map(children, (child, index) => {
-        if (React.isValidElement(child) && child.type === TableRow) {
-          const rowNumber = (currentPage! - 1) * rowsPerPage! + index + 1;
+        if (React.isValidElement(child) && (child.type === TableRow || (typeof child.type === 'function' && (child.type as any).displayName === (TableRow as any).displayName))) {
           return React.cloneElement(child as React.ReactElement<any>, {
             key: index,
-            rowNumber,
-            showRowNumber,
-            selectedRows,
-            onSelectRow,
+            columns,
+            style: gridStyle, // Pass style to the row
           });
         }
         return child;
@@ -281,42 +249,37 @@ export function TableBody({
     </div>
   );
 }
-TableBody.displayName = 'TableBody';
+TableBody.displayName = "TableBody";
 
-// Table Row Component
 export function TableRow({
   children,
   className = "",
   onClick,
-  rowNumber,
-  showRowNumber,
-  selectedRows,
-  onSelectRow,
+  columns, // Receive `columns` to pass info to cells
+  style,
 }: TableRowProps) {
   return (
     <div
-      className={`flex items-center border-b border-gray-200 last:border-b-0 hover:bg-gray-50 cursor-pointer ${className}`}
+      style={style}
+      className={`grid items-center bg-white border-b border-gray-200 last:border-b-0 hover:bg-gray-50 cursor-pointer ${className}`}
       onClick={onClick}
     >
-      {showRowNumber && rowNumber && (
-        <div className="w-8 sm:w-12 px-3 sm:px-6 py-3 sm:py-4 flex items-center shrink-0">
-          <input
-            type="checkbox"
-            checked={selectedRows?.has(rowNumber) || false}
-            onChange={() => onSelectRow?.(rowNumber)}
-            className="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500 mr-1 sm:mr-2"
-            onClick={(e) => e.stopPropagation()}
-          />
-          <span className="text-xs sm:text-sm text-gray-800 font-medium">
-            {rowNumber}
-          </span>
-        </div>
-      )}
-      {children}
+      {/* Map over children to inject props needed for alignment */}
+      {React.Children.map(children, (child, index) => {
+        if (React.isValidElement(child) && (child.type === TableCell || (typeof child.type === 'function' && (child.type as any).displayName === (TableCell as any).displayName))) {
+          return React.cloneElement(child as React.ReactElement<any>, {
+            columnIndex: index,
+            totalColumns: columns?.length,
+            // Pass responsive visibility class from column definition
+            className: `${(child as any).props?.className || ''} ${columns?.[index]?.responsive ? 'hidden lg:block' : ''}`.trim(),
+          });
+        }
+        return child;
+      })}
     </div>
   );
 }
-TableRow.displayName = 'TableRow';
+TableRow.displayName = "TableRow";
 
 // Table Cell Component
 export function TableCell({
@@ -326,31 +289,17 @@ export function TableCell({
   columnIndex,
   totalColumns,
 }: TableCellProps) {
-  // Use the same responsive width calculation as TableHead
-  const getResponsiveWidth = () => {
-    if (totalColumns) {
-      if (totalColumns <= 3) return 'w-24 sm:w-32 md:w-40';
-      if (totalColumns <= 5) return 'w-20 sm:w-28 md:w-32';
-      return 'w-16 sm:w-24 md:w-28';
-    }
-    
-    // Fallback to colSpan-based widths
-    if (colSpan === 1) return 'w-16 sm:w-24 md:w-28';
-    if (colSpan === 2) return 'w-32 sm:w-48 md:w-56';
-    return 'w-48 sm:w-72 md:w-84';
-  };
+  const colSpanClass = colSpan > 1 ? `col-span-${colSpan}` : "";
 
   return (
     <div
-      className={`px-1 sm:px-2 py-3 sm:py-4 truncate ${getResponsiveWidth()} ${className}`}
+      className={`px-1 sm:px-2 py-3 sm:py-4 truncate ${colSpanClass} ${className}`}
     >
-      <div className="text-xs sm:text-sm">
-        {children}
-      </div>
+      <div className="text-xs sm:text-sm flex justify-center">{children}</div>
     </div>
   );
 }
-TableCell.displayName = 'TableCell';
+TableCell.displayName = "TableCell";
 
 // Pagination Controls Component
 interface PaginationProps {
@@ -469,7 +418,6 @@ function PaginationControls({
   );
 }
 
-// No Data Component
 function NoData() {
   return (
     <div className="text-center py-16 text-gray-500">

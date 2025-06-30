@@ -23,7 +23,7 @@ const TABLE_HEAD: TableHeadItem[] = [
   { id: 'name', label: 'Name', sortable: true },
   { id: 'email', label: 'Email', sortable: true },
   { id: 'status', label: 'Status', sortable: true },
-  { id: 'role', label: 'Role', sortable: true },
+  { id: 'role', label: 'Role', sortable: true },  
 ];
 
 export default function TableExample() {
@@ -112,7 +112,6 @@ export default function TableExample() {
       <Table 
         data={data} 
         onSort={handleSort}
-        showRowNumber={true}
         renderRowCard={renderRowCard}
         renderRow={renderRow}
         rowsPerPage={10}

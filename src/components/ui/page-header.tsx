@@ -16,7 +16,7 @@ const pageInfo: Record<string, { title: string; tagline: string }> = {
     title: "Orders",
     tagline: "Track and manage customer orders",
   },
-  "/users": {
+  "/customers": {
     title: "Customers",
     tagline: "Track and manage customer",
   },

@@ -1,7 +1,7 @@
 "use client";
 
 import { useLoadingStore } from "@/store/loading-store";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "@/lib/framer";
 
 const pulseVariant = {
   animate: {
