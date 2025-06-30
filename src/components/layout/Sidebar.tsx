@@ -17,22 +17,64 @@ interface SidebarProps {
 
 export default function Sidebar({ variant = "desktop" }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
-  const logout = useAuthStore((state) => state.logout);
+  
+  const { logout, isAuthenticated, getUser } = useAuthStore();
   const accessToken = useAuthStore((state) => state.accessToken);
+  
   const { profileData, profileLoading, isProfileError } = useGetUser({
-    enabled: !!accessToken,
+    enabled: isAuthenticated(),
   });
-  const authUser = useAuthStore((state) => state.user);
-  const user = profileData || authUser;
+  
+  // Get user from store (either fresh from API or cached)
+  const user = profileData || getUser();
 
   const handleLogout = () => {
     try {
       logout();
       window.location.href = paths.auth.login;
     } catch (error) {
-      console.error(error);
+      console.error("Logout error:", error);
     }
   };
+
+  // User info component
+  const UserInfo = ({ collapsed }: { collapsed: boolean }) => (
+    <div
+      className={`w-full min-h-[80px] px-1 flex items-center justify-between mb-2 overflow-hidden ${
+        collapsed ? "justify-center" : ""
+      }`}
+    >
+      {!collapsed && (
+        <div className="flex items-center gap-3 overflow-hidden">
+          <Avatar src={AvatarImage} />
+          <div className="flex flex-col items-start font-display overflow-hidden">
+            {profileLoading ? (
+              <div className="text-sm text-neutral-500">Loading...</div>
+            ) : isProfileError ? (
+              <div className="text-sm text-red-500">
+                Error loading profile
+              </div>
+            ) : user ? (
+              <>
+                <h1 className="text-neutral-800 dark:text-white font-semibold truncate max-w-[100px]">
+                  {user.firstname} {user.lastname}
+                </h1>
+                <p className="text-xs text-light-grey truncate max-w-[100px]">
+                  {user.email}
+                </p>s
+              </>
+            ) : (
+              <div className="text-sm text-neutral-500">User not found</div>
+            )}
+          </div>
+        </div>
+      )}
+      <LogoutIcon
+        className="flex-shrink-0 text-error cursor-pointer hover:text-red-700 transition-colors"
+        onClick={handleLogout}
+      />
+    </div>
+  );
 
   if (variant === "mobile") {
     return (
@@ -78,7 +120,7 @@ export default function Sidebar({ variant = "desktop" }: SidebarProps) {
             )}
           </div>
           <LogoutIcon
-            className="ml-auto text-error cursor-pointer"
+            className="ml-auto text-error cursor-pointer hover:text-red-700 transition-colors"
             onClick={handleLogout}
           />
         </div>
@@ -88,11 +130,11 @@ export default function Sidebar({ variant = "desktop" }: SidebarProps) {
 
   return (
     <div
-      className={`h-screen border-r border-gray-100 dark:border-gray-800 hidden md:flex flex-col transition-all duration-300 ${
+      className={`h-screen border-r border-gray-100 dark:border-gray-800 hidden md:flex flex-col transition-all duration-300 flex-shrink-0 ${
         collapsed ? "w-[70px]" : "w-[220px]"
       }`}
     >
-      <div className="h-[96px] relative w-full flex items-center transition-all duration-300">
+      <div className="h-[96px] relative w-full flex items-center transition-all duration-300 flex-shrink-0">
         <div
           className={`flex-1 ${
             collapsed ? "flex justify-center items-center" : "px-3"
@@ -107,14 +149,14 @@ export default function Sidebar({ variant = "desktop" }: SidebarProps) {
           )}
         </div>
         <SkipBackIcon
-          className={`absolute top-1/2 -translate-y-1/2 text-neutral-500 fill-current cursor-pointer transition-transform duration-300 ${
+          className={`absolute top-1/2 -translate-y-1/2 text-neutral-500 fill-current cursor-pointer transition-transform duration-300 hover:text-neutral-700 ${
             collapsed ? "rotate-180 right-[-16px]" : "right-2"
           }`}
           onClick={() => setCollapsed(!collapsed)}
         />
       </div>
 
-      <div className="w-full h-full pt-2 flex flex-col justify-between gap-2 px-2">
+      <div className="flex-1 overflow-y-auto pt-2 flex flex-col justify-between gap-2 px-2">
         <div className={`flex flex-col ${collapsed ? "gap-4" : "gap-6"}`}>
           {sidebarRoutes.map((section, sectionIdx) => (
             <div key={`desktop-${sectionIdx}`}>
@@ -138,41 +180,7 @@ export default function Sidebar({ variant = "desktop" }: SidebarProps) {
           ))}
         </div>
 
-        <div
-          className={`w-full min-h-[80px] px-1 flex items-center justify-between mb-2 overflow-hidden ${
-            collapsed ? "justify-center" : ""
-          }`}
-        >
-          {!collapsed && (
-            <div className="flex items-center gap-3 overflow-hidden">
-              <Avatar src={AvatarImage} />
-              <div className="flex flex-col items-start font-display overflow-hidden">
-                {profileLoading ? (
-                  <div className="text-sm text-neutral-500">Loading...</div>
-                ) : isProfileError ? (
-                  <div className="text-sm text-red-500">
-                    Error loading profile
-                  </div>
-                ) : user ? (
-                  <>
-                    <h1 className="text-neutral-800 dark:text-white font-semibold truncate max-w-[100px]">
-                      {user.firstname} {user.lastname}
-                    </h1>
-                    <p className="text-xs text-light-grey truncate max-w-[100px]">
-                      {user.email}
-                    </p>
-                  </>
-                ) : (
-                  <div className="text-sm text-neutral-500">User not found</div>
-                )}
-              </div>
-            </div>
-          )}
-          <LogoutIcon
-            className="flex-shrink-0 text-error cursor-pointer"
-            onClick={handleLogout}
-          />
-        </div>
+        <UserInfo collapsed={collapsed} />
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
+import TableExample from "@/components/ui/table-example";
 import React from "react";
 
 const UserPage = () => {
-  return <div>UserPage</div>;
-};
-
+  return <div><TableExample /></div>;
+}
 export default UserPage;

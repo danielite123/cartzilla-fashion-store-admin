@@ -13,7 +13,7 @@ export default function Header() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
     <>
-      <div className="w-full min-h-[50px] md:min-h-[96px]  border-b border-gray-100 py-4 px-6 lg:px-10 flex flex-row justify-between items-center">
+      <div className="w-full min-h-[50px] md:min-h-[96px] border-b border-gray-100 py-4 px-6 lg:px-10 flex flex-row justify-between items-center bg-white dark:bg-gray-900 flex-shrink-0">
         <div className="">
           <PageHeader className="hidden md:block" />
 
