@@ -8,6 +8,7 @@ interface SidebarNavItemProps {
   name: string;
   icon: React.ComponentType<{ className?: string }>;
   collapsed?: boolean;
+  onClick?: () => void;
 }
 
 export default function SidebarNavItem({
@@ -15,12 +16,13 @@ export default function SidebarNavItem({
   name,
   icon,
   collapsed,
+  onClick,
 }: SidebarNavItemProps) {
   const isActive = useActiveLink(href);
   const Icon = icon;
 
   return (
-    <Link href={href}>
+    <Link href={href} onClick={onClick}>
       <div
         className={`flex items-center gap-2 px-3 py-2 rounded-md w-full cursor-pointer transition-all duration-300
         ${collapsed ? "justify-center min-h-[40px]" : "pl-4"}

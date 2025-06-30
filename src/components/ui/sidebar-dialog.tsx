@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef, ReactNode } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  ReactNode,
+  cloneElement,
+  isValidElement,
+} from "react";
 import { createPortal } from "react-dom";
 import AppLogo from "./app-logo";
 
@@ -117,7 +124,14 @@ export default function SidebarDialog({
             </svg>
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto p-4">{children}</div>
+        <div className="flex-1 overflow-y-auto p-4">
+          {isValidElement(children) && (children.type as any).name === "Sidebar"
+            ? cloneElement(
+                children as React.ReactElement<{ onLinkClick?: () => void }>,
+                { onLinkClick: onClose }
+              )
+            : children}
+        </div>
       </div>
     </div>,
     document.body

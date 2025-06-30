@@ -13,18 +13,22 @@ import { useGetUser } from "@/api/user";
 
 interface SidebarProps {
   variant?: "mobile" | "desktop";
+  onLinkClick?: () => void;
 }
 
-export default function Sidebar({ variant = "desktop" }: SidebarProps) {
+export default function Sidebar({
+  variant = "desktop",
+  onLinkClick,
+}: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
-  
-  const { logout, isAuthenticated, getUser } = useAuthStore();
+
+  const { logout, getUser } = useAuthStore();
   const accessToken = useAuthStore((state) => state.accessToken);
-  
+
   const { profileData, profileLoading, isProfileError } = useGetUser({
-    enabled: isAuthenticated(),
+    enabled: !!accessToken,
   });
-  
+
   // Get user from store (either fresh from API or cached)
   const user = profileData || getUser();
 
@@ -51,9 +55,7 @@ export default function Sidebar({ variant = "desktop" }: SidebarProps) {
             {profileLoading ? (
               <div className="text-sm text-neutral-500">Loading...</div>
             ) : isProfileError ? (
-              <div className="text-sm text-red-500">
-                Error loading profile
-              </div>
+              <div className="text-sm text-red-500">Error loading profile</div>
             ) : user ? (
               <>
                 <h1 className="text-neutral-800 dark:text-white font-semibold truncate max-w-[100px]">
@@ -61,7 +63,7 @@ export default function Sidebar({ variant = "desktop" }: SidebarProps) {
                 </h1>
                 <p className="text-xs text-light-grey truncate max-w-[100px]">
                   {user.email}
-                </p>s
+                </p>
               </>
             ) : (
               <div className="text-sm text-neutral-500">User not found</div>
@@ -93,6 +95,7 @@ export default function Sidebar({ variant = "desktop" }: SidebarProps) {
                       href={route.path || ""}
                       name={route.name}
                       icon={route.icon}
+                      onClick={onLinkClick}
                     />
                   ))}
                 </div>
@@ -101,7 +104,7 @@ export default function Sidebar({ variant = "desktop" }: SidebarProps) {
           </div>
         </div>
 
-        <div className="min-h-[80px] px-3 flex items-center border-t border-gray-200 dark:border-gray-700">
+        <div className="min-h-[60px] px-3 pt-3 flex items-center border-t border-gray-200 dark:border-gray-700">
           <Avatar src={AvatarImage} />
           <div className="flex flex-col ml-3 font-display">
             {profileLoading && !user ? (

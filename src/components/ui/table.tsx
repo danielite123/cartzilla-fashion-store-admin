@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useMemo } from "react";
-import { ChevronDown,  AlertCircle, ArrowUpDown } from "lucide-react";
+import { ChevronDown, AlertCircle, ArrowUpDown } from "lucide-react";
 
 // Types
 export interface TableHeadItem {
@@ -177,7 +177,7 @@ export function TableHead({
             item.responsive ? "hidden lg:block" : ""
           }`}
         >
-          <div className="flex items-center justify-center">
+          <div className="flex items-center px-4">
             <span className="text-xs sm:text-sm truncate">{item.label}</span>
             {item.sortable && onSort && (
               <button
@@ -199,8 +199,6 @@ TableHead.displayName = "TableHead";
 export function TableBody({
   children,
   data,
-  currentPage,
-  rowsPerPage,
   renderRow,
   columns, // Receive columns to pass to children
   className = "",
@@ -217,16 +215,19 @@ export function TableBody({
         {data.map((item, index) => {
           const rowElement = renderRow(item, index);
           // Smartly inject props into the rendered TableRow for alignment
-          if (React.isValidElement(rowElement) && (rowElement.type === TableRow || (typeof rowElement.type === 'function' && (rowElement.type as any).displayName === (TableRow as any).displayName))) {
-            return React.cloneElement(
-              rowElement as React.ReactElement<any>,
-              {
-                key: index,
-                ...(rowElement.props || {}),
-                columns, // Pass columns down to the row
-                style: gridStyle,
-              }
-            );
+          if (
+            React.isValidElement(rowElement) &&
+            (rowElement.type === TableRow ||
+              (typeof rowElement.type === "function" &&
+                (rowElement.type as any).displayName ===
+                  (TableRow as any).displayName))
+          ) {
+            return React.cloneElement(rowElement as React.ReactElement<any>, {
+              key: index,
+              ...(rowElement.props || {}),
+              columns, // Pass columns down to the row
+              style: gridStyle,
+            });
           }
           return rowElement;
         })}
@@ -237,7 +238,13 @@ export function TableBody({
   return (
     <div className={className}>
       {React.Children.map(children, (child, index) => {
-        if (React.isValidElement(child) && (child.type === TableRow || (typeof child.type === 'function' && (child.type as any).displayName === (TableRow as any).displayName))) {
+        if (
+          React.isValidElement(child) &&
+          (child.type === TableRow ||
+            (typeof child.type === "function" &&
+              (child.type as any).displayName ===
+                (TableRow as any).displayName))
+        ) {
           return React.cloneElement(child as React.ReactElement<any>, {
             key: index,
             columns,
@@ -266,12 +273,20 @@ export function TableRow({
     >
       {/* Map over children to inject props needed for alignment */}
       {React.Children.map(children, (child, index) => {
-        if (React.isValidElement(child) && (child.type === TableCell || (typeof child.type === 'function' && (child.type as any).displayName === (TableCell as any).displayName))) {
+        if (
+          React.isValidElement(child) &&
+          (child.type === TableCell ||
+            (typeof child.type === "function" &&
+              (child.type as any).displayName ===
+                (TableCell as any).displayName))
+        ) {
           return React.cloneElement(child as React.ReactElement<any>, {
             columnIndex: index,
             totalColumns: columns?.length,
             // Pass responsive visibility class from column definition
-            className: `${(child as any).props?.className || ''} ${columns?.[index]?.responsive ? 'hidden lg:block' : ''}`.trim(),
+            className: `${(child as any).props?.className || ""} ${
+              columns?.[index]?.responsive ? "hidden lg:block" : ""
+            }`.trim(),
           });
         }
         return child;
@@ -286,8 +301,6 @@ export function TableCell({
   children,
   className = "",
   colSpan = 1,
-  columnIndex,
-  totalColumns,
 }: TableCellProps) {
   const colSpanClass = colSpan > 1 ? `col-span-${colSpan}` : "";
 
@@ -295,7 +308,7 @@ export function TableCell({
     <div
       className={`px-1 sm:px-2 py-3 sm:py-4 truncate ${colSpanClass} ${className}`}
     >
-      <div className="text-xs sm:text-sm flex justify-center">{children}</div>
+      <div className="text-xs sm:text-sm px-4">{children}</div>
     </div>
   );
 }
@@ -382,7 +395,7 @@ function PaginationControls({
           key={p === "..." ? `ellipsis-${index}` : `page-${p}`}
           onClick={() => typeof p === "number" && handlePageChange(p)}
           disabled={p === "..."}
-          className={`h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center rounded-md text-xs sm:text-sm ${
+          className={`h-8 w-8 sm:h-9 sm:w-9 flex border border-gray-300 items-center justify-center rounded-md text-xs sm:text-sm ${
             currentPage === p
               ? "bg-green-100 text-green-600 font-bold"
               : "text-gray-700 hover:bg-gray-100"
