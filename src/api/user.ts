@@ -3,13 +3,22 @@ import { useAuthStore } from "@/store/auth-store";
 import { IUserItem } from "@/types/user";
 import { queryKeys } from "@/utils/react-query";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export function useGetUser(option?: { enabled: boolean }) {
   const setUser = useAuthStore((state) => state.setUser);
   const accessToken = useAuthStore((s) => s.accessToken);
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  const shouldFetch = option?.enabled ?? !!accessToken;
+  // Check if store is hydrated
+  useEffect(() => {
+    const unsubscribe = useAuthStore.persist.onFinishHydration(() => {
+      setIsHydrated(true);
+    });
+    return unsubscribe;
+  }, []);
+
+  const shouldFetch = isHydrated && (option?.enabled ?? !!accessToken);
 
   const { data, isLoading, refetch, isError, error } = useQuery<IUserItem>({
     ...option,

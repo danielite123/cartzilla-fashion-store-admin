@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useMemo } from "react";
-import { ChevronDown, AlertCircle, ArrowUpDown } from "lucide-react";
+import { AlertCircle, ArrowUpDown, ArrowUp } from "lucide-react";
 
 // Types
 export interface TableHeadItem {
@@ -108,14 +108,35 @@ export default function Table({
                   (child.type as any).displayName ===
                     (TableBody as any).displayName))
             ) {
-              return React.cloneElement(child as React.ReactElement<any>, {
-                data: paginatedData,
-                currentPage,
-                rowsPerPage,
-                renderRow,
-                columns,
-                gridStyle,
-              });
+              // Render TableBody and then pagination row if needed
+              return (
+                <>
+                  {React.cloneElement(child as React.ReactElement<any>, {
+                    data: paginatedData,
+                    currentPage,
+                    rowsPerPage,
+                    renderRow,
+                    columns,
+                    gridStyle,
+                  })}
+                  {totalPages > 1 && (
+                    <TableRow columns={columns}>
+                      <TableCell
+                        colSpan={columns.length}
+                        className="!p-0 !border-0"
+                      >
+                        <div className="flex justify-between py-4 bg-transparent border-t border-gray-200">
+                          <PaginationControls
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                          />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </>
+              );
             }
             return child;
           })}
@@ -140,21 +161,20 @@ export default function Table({
                 )}
               </div>
             ))}
+            {totalPages > 1 && (
+              <div className="flex justify-center py-4 bg-transparent border-t border-gray-200">
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </div>
+            )}
           </div>
         ) : (
           <NoData />
         )}
       </div>
-
-      {totalPages > 1 && (
-        <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-t border-gray-200">
-          <PaginationControls
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        </div>
-      )}
     </div>
   );
 }
@@ -381,7 +401,7 @@ function PaginationControls({
               onClick={() =>
                 handlePageChange((uniquePageNumbers[index - 1] as number) + 1)
               }
-              className="h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center rounded-md text-xs sm:text-sm text-gray-700 hover:bg-gray-100"
+              className="h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center rounded-md text-xs sm:text-sm text-gray-700"
             >
               {(uniquePageNumbers[index - 1] as number) + 1}
             </button>
@@ -398,7 +418,7 @@ function PaginationControls({
           className={`h-8 w-8 sm:h-9 sm:w-9 flex border border-gray-300 items-center justify-center rounded-md text-xs sm:text-sm ${
             currentPage === p
               ? "bg-green-100 text-green-600 font-bold"
-              : "text-gray-700 hover:bg-gray-100"
+              : "text-gray-700"
           } ${p === "..." ? "cursor-default" : ""}`}
         >
           {p}
@@ -412,9 +432,9 @@ function PaginationControls({
       <button
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="px-2 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+        className="px-2 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md shadow-xs hover:shadow-none bg-white text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
       >
-        <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4 mr-1 transform -rotate-90" />
+        <ArrowUp className="h-3 w-3 sm:h-4 sm:w-4 mr-1 transform -rotate-90" />
         <span className="hidden sm:inline">Previous</span>
         <span className="sm:hidden">Prev</span>
       </button>
@@ -422,10 +442,10 @@ function PaginationControls({
       <button
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="px-2 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+        className="px-2 sm:px-3 py-1.5 text-xs sm:text-sm rounded-md shadow-xs hover:shadow-none bg-white text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
       >
         <span className="hidden sm:inline">Next</span>
-        <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4 ml-1 transform rotate-90" />
+        <ArrowUp className="h-3 w-3 sm:h-4 sm:w-4 ml-1 transform rotate-90" />
       </button>
     </>
   );
