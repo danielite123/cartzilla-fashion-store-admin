@@ -30,4 +30,7 @@ export const queryKeys = {
   user: {
     root: [{ type: "user" }],
   },
+  customer: {
+    root: [{ type: "customers" }],
+  },
 };

@@ -118,4 +118,7 @@ export const endpoints = {
   user: {
     profile: "/users/profile",
   },
+  customer: {
+    root: "/users/all-users",
+  },
 };
