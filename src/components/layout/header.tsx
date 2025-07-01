@@ -6,8 +6,8 @@ import AvatarImage from "@/assets/avatar'.jpg";
 import PageHeader from "../ui/page-header";
 import ThemeToggle from "@/components/layout/theme-toggle";
 import { useState } from "react";
-import SidebarDialog from "../ui/sidebar-dialog";
 import Sidebar from "./Sidebar"; // Changed from MobileSideBar
+import { SidebarDialog } from "../ui";
 
 export default function Header() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

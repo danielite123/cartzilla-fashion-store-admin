@@ -7,11 +7,10 @@ export default function Overview() {
         <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
         <p className="text-gray-600">Welcome to your admin dashboard</p>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <UserProfileCard />
-        
-        {/* You can add more dashboard widgets here */}
+
         <div className="p-6 bg-white rounded-lg shadow-md border">
           <h3 className="text-lg font-semibold mb-4">Quick Stats</h3>
           <div className="space-y-3">
@@ -29,7 +28,7 @@ export default function Overview() {
             </div>
           </div>
         </div>
-        
+
         <div className="p-6 bg-white rounded-lg shadow-md border">
           <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
           <div className="space-y-2 text-sm">

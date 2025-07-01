@@ -1,6 +1,6 @@
 "use client";
 
-import Table from "@/components/ui/table";
+import { Table } from "@/components/ui";
 import { MessageSquare, Trash2 } from "lucide-react";
 import React from "react";
 

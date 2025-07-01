@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useMemo } from "react";
 import { AlertCircle, ArrowUpDown, ArrowUp } from "lucide-react";
@@ -188,7 +190,7 @@ export function TableHead({
   return (
     <div
       style={style}
-      className={`grid items-center bg-aqua-spring p-2 rounded-md font-medium text-gray-600 text-sm ${className}`}
+      className={`font-display  grid items-center bg-aqua-spring p-2 rounded-lg font-medium text-gray-600 text-sm ${className}`}
     >
       {items.map((item) => (
         <div
@@ -326,7 +328,7 @@ export function TableCell({
 
   return (
     <div
-      className={`px-1 sm:px-2 py-3 sm:py-4 truncate ${colSpanClass} ${className}`}
+      className={`font-display px-1 sm:px-2 py-3 sm:py-4 truncate ${colSpanClass} ${className}`}
     >
       <div className="text-xs sm:text-sm px-4">{children}</div>
     </div>

@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import { StatsCard } from "@/components/ui";
 import Table, {
   TableHead,
   TableBody,
   TableRow,
   TableCell,
   TableHeadItem,
-} from "./table";
+} from "@/components/ui/table";
 import { useGetCustomerList } from "@/api/customer";
 import { IUserItem } from "@/types/user";
+import React, { useState } from "react";
 
-// Update table headers to match customer data structure
 const TABLE_HEAD: TableHeadItem[] = [
   { id: "name", label: "Name", sortable: true },
   { id: "email", label: "Email", sortable: true },
@@ -19,7 +19,7 @@ const TABLE_HEAD: TableHeadItem[] = [
   { id: "role", label: "Role", sortable: true },
 ];
 
-export default function TableExample() {
+export default function CustomerView() {
   const { customerListData, customerListLoading } = useGetCustomerList();
   const [data, setData] = useState<IUserItem[]>([]);
   const [sortConfig, setSortConfig] = useState<{
@@ -123,18 +123,41 @@ export default function TableExample() {
   }
 
   return (
-    <div className="p-6">
-      <Table
-        data={data}
-        onSort={handleSort}
-        renderRowCard={renderRowCard}
-        renderRow={renderRow}
-        rowsPerPage={10}
-        columns={TABLE_HEAD}
-      >
-        <TableHead items={TABLE_HEAD} />
-        <TableBody />
-      </Table>
+    <div className="w-full max-w-7xl mx-auto px-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <StatsCard
+          title="Revenue"
+          value={12500}
+          percentageChange={15}
+          period="This Month"
+        />
+        <StatsCard
+          title="Completed Orders"
+          value={12500}
+          percentageChange={15}
+          period="This Month"
+        />
+        <StatsCard
+          title="Revenue"
+          value={12500}
+          percentageChange={15}
+          period="This Month"
+        />
+      </div>
+      {/* {Table} */}
+      <div className="py-6">
+        <Table
+          data={data}
+          onSort={handleSort}
+          renderRowCard={renderRowCard}
+          renderRow={renderRow}
+          rowsPerPage={10}
+          columns={TABLE_HEAD}
+        >
+          <TableHead items={TABLE_HEAD} className="text-ocean-green" />
+          <TableBody />
+        </Table>
+      </div>
     </div>
   );
 }

@@ -8,8 +8,8 @@ import Avatar from "../ui/Avatar";
 import AvatarImage from "@/assets/avatar'.jpg";
 import { useAuthStore } from "@/store/auth-store";
 import { paths } from "@/routes/path";
-import SidebarNavItem from "../ui/sidebar-item";
 import { useGetUser } from "@/api/user";
+import { SidebarNavItem } from "../ui";
 
 interface SidebarProps {
   variant?: "mobile" | "desktop";
