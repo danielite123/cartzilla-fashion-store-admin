@@ -1,6 +1,6 @@
 "use client";
 
-import { StatsCard } from "@/components/ui";
+import { CustomerViewSkeleton, StatsCard } from "@/components/ui";
 import Table, {
   TableHead,
   TableBody,
@@ -116,8 +116,8 @@ export default function CustomerView() {
 
   if (customerListLoading) {
     return (
-      <div className="p-6">
-        <div className="text-center py-8">Loading customers...</div>
+      <div className="p-2">
+        <CustomerViewSkeleton />
       </div>
     );
   }

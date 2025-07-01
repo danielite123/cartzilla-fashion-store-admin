@@ -11,5 +11,4 @@ export { default as SidebarNavItem } from "./sidebar-item";
 export { default as SidebarDialog } from "./sidebar-dialog";
 export { TableHead, TableBody, TableRow, TableCell } from "./table";
 export { TabSwitcher } from "./tab-switcher";
-
-// export { default as Avatar } from "./Avatar";
+export { CustomerViewSkeleton } from "./skeleton/customer-skeleton";
